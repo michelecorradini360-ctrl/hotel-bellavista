@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hotel Bellavista | Reception</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8d6748">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Bellavista">
+
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@5/dist/email.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f3ee;
+            color: #29251f;
+        }
+
+        header {
+            height: 540px;
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38)),
+                url("https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=85")
+                center/cover;
+            color: white;
+        }
+
+        nav {
+            width: 90%;
+            max-width: 1100px;
+            margin: auto;
+            padding: 25px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 15px;
+        }
+
+        .hero {
+            height: 430px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            margin: 0;
+        }
+
+        .hero p {
+            font-size: 21px;
+            margin: 15px 0 25px;
+        }
+
+        .bottone-hero {
+            display: inline-block;
+            background: #b58758;
+            color: white;
+            text-decoration: none;
+            padding: 13px 25px;
+            border-radius: 8px;
+        }
+
+        .contenitore {
+            width: 90%;
+            max-width: 1100px;
+            margin: 50px auto;
+        }
+
+        .titolo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .titolo h2 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .titolo p {
+            color: #6e665d;
+        }
+
+        .camere {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        .camera {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+        }
+
+        .camera img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .camera div {
+            padding: 20px;
+        }
+
+        .camera h3 {
+            margin-top: 0;
+        }
+
+        .prenotazione {
+            background: white;
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 7px 25px rgba(0,0,0,0.09);
+        }
+
+        .prenotazione h2 {
+            text-align: center;
+            font-size: 32px;
+        }
+
+        .riga {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .campo {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d2ccc4;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #b58758;
+        }
+
+        button {
+            width: 100%;
+            background: #b58758;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #926b45;
+        }
+
+        #messaggio {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .riepilogo {
+            display: none;
+            background: #f5ecdf;
+            border-left: 5px solid #b58758;
+            padding: 25px;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+
+        .riepilogo h3 {
+            margin-top: 0;
+        }
+
+        .servizi {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 60px 0;
+        }
+
+        .servizio {
+            background: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 12px;
+        }
+
+        .servizio .icona {
+            font-size: 35px;
+        }
+
+        footer {
+            background: #28241f;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+        }
+
+        .piccolo {
+            color: #756c63;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 800px) {
+            .hero h1 {
+                font-size: 44px;
+            }
+
+            .camere,
+            .servizi,
+            .riga {
+                grid-template-columns: 1fr;
+            }
+
+            nav a {
+                margin-left: 10px;
+            }
+
+            .prenotazione {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <div class="logo">HOTEL BELLAVISTA</div>
+
+        <div>
+            <a href="#camere">Camere</a>
+            <a href="#prenota">Prenota</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div>
+            <h1>Hotel Bellavista</h1>
+            <p>Il tuo soggiorno, la nostra ospitalità.</p>
+            <a class="bottone-hero" href="#prenota">Prenota ora</a>
+        </div>
+    </div>
+</header>
+
+
+<main>
+
+    <section class="contenitore" id="camere">
+
+        <div class="titolo">
+            <h2>Le nostre camere</h2>
+            <p>Scegli la soluzione più adatta al tuo soggiorno.</p>
+        </div>
+
+        <div class="camere">
+
+            <div class="camera">
+                <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80" alt="Camera singola">
+                <div>
+                    <h3>Camera Singola</h3>
+                    <p>Una soluzione comoda e accogliente per una persona.</p>
+                </div>
+            </div>
+
+            <div class="camera">
+                <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=900&q=80" alt="Camera doppia">
+                <div>
+                    <h3>Camera Doppia</h3>
+                    <p>Perfetta per una coppia o per due ospiti.</p>
+                </div>
+            </div>
+
+            <div class="camera">
+                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80" alt="Suite">
+                <div>
+                    <h3>Suite</h3>
+                    <p>Più spazio e comfort per un soggiorno speciale.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section class="contenitore">
+
+        <div class="servizi">
+
+            <div class="servizio">
+                <div class="icona">🛎️</div>
+                <h3>Reception</h3>
+                <p>Assistenza durante il soggiorno.</p>
+            </div>
+
+            <div class="servizio">
+                <div class="icona">📶</div>
+                <h3>Wi-Fi</h3>
+                <p>Connessione disponibile per gli ospiti.</p>
+            </div>
+
+            <div class="servizio">
+                <div class="icona">☕</div>
+                <h3>Colazione</h3>
+                <p>Inizia la giornata nel modo giusto.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="contenitore" id="prenota">
+
+        <div class="prenotazione">
+
+            <h2>Effettua una prenotazione</h2>
+
+            <form id="formPrenotazione">
+
+                <div class="riga">
+
+                    <div class="campo">
+                        <label for="nome">Nome</label>
+                        <input
+                            type="text"
+                            id="nome"
+                            name="nome"
+                            required
+                            autocomplete="given-name"
+                        >
+                    </div>
+
+                    <div class="campo">
+                        <label for="cognome">Cognome</label>
+                        <input
+                            type="text"
+                            id="cognome"
+                            name="cognome"
+                            required
+                            autocomplete="family-name"
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="campo">
+                    <label for="email">Email cliente</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+
+                <div class="campo">
+                    <label for="ospiti">Numero ospiti</label>
+                    <input
+                        type="number"
+                        id="ospiti"
+                        name="ospiti"
+                        min="1"
+                        max="5"
+                        step="1"
+                        required
+                    >
+                </div>
+
+
+                <div class="riga">
+
+                    <div class="campo">
+                        <label for="checkin">Data Check-in</label>
+                        <input
+                            type="date"
+                            id="checkin"
+                            name="checkin"
+                            required
+                        >
+                    </div>
+
+                    <div class="campo">
+                        <label for="checkout">Data Check-out</label>
+                        <input
+                            type="date"
+                            id="checkout"
+                            name="checkout"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="campo">
+                    <label for="camera">Tipologia Camera</label>
+
+                    <select id="camera" name="camera">
+                        <option value="Singola">Singola</option>
+                        <option value="Doppia">Doppia</option>
+                        <option value="Suite">Suite</option>
+                    </select>
+                </div>
+
+
+                <button type="submit">Conferma prenotazione</button>
+
+                <div id="messaggio"></div>
+
+                <p class="piccolo">
+                    Dopo la conferma verrà inviata una email all'indirizzo indicato.
+                </p>
+
+            </form>
+
+
+            <div class="riepilogo" id="riepilogo">
+
+                <h3>✓ Prenotazione registrata</h3>
+
+                <p><b>Nome:</b> <span id="rNome"></span></p>
+                <p><b>Cognome:</b> <span id="rCognome"></span></p>
+                <p><b>Email:</b> <span id="rEmail"></span></p>
+                <p><b>Numero ospiti:</b> <span id="rOspiti"></span></p>
+                <p><b>Check-in:</b> <span id="rCheckin"></span></p>
+                <p><b>Check-out:</b> <span id="rCheckout"></span></p>
+                <p><b>Camera:</b> <span id="rCamera"></span></p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    <h3>Hotel Bellavista</h3>
+    <p>Reception e prenotazioni</p>
+</footer>
+
+
+<script>
+
+    /* =========================================================
+       CONFIGURAZIONE EMAILJS
+
+       Codici EmailJS già inseriti.
+       ========================================================= */
+
+    const PUBLIC_KEY = "lnoJ8n1FDnU8PNn_L";
+    const SERVICE_ID = "service_333MC";
+    const TEMPLATE_ID = "template_72b25ae";
+
+
+    /*
+       Controllo se EmailJS è stato configurato.
+    */
+
+    let emailConfigurata = true;
+
+    if ([PUBLIC_KEY, SERVICE_ID, TEMPLATE_ID].some(function(valore) {
+        return valore.startsWith("INSERISCI_");
+    })) {
+        emailConfigurata = false;
+    }
+    else {
+        emailjs.init({
+            publicKey: PUBLIC_KEY
+        });
+    }
+
+
+    /* =========================================================
+       PRIMA LETTERA MAIUSCOLA
+       ========================================================= */
+
+    function sistemaNome(input) {
+
+        let testo = input.value;
+
+        if (testo.length > 0) {
+
+            input.value =
+                testo.charAt(0).toUpperCase() +
+                testo.slice(1);
+
+        }
+    }
+
+
+    document.getElementById("nome").addEventListener("input", function () {
+        sistemaNome(this);
+    });
+
+
+    document.getElementById("cognome").addEventListener("input", function () {
+        sistemaNome(this);
+    });
+
+
+    /* =========================================================
+       CHECK-OUT DOPO CHECK-IN
+       ========================================================= */
+
+    document.getElementById("checkin").addEventListener("change", function () {
+
+        document.getElementById("checkout").min = this.value;
+
+        let checkout = document.getElementById("checkout").value;
+
+        if (checkout && checkout <= this.value) {
+            document.getElementById("checkout").value = "";
+        }
+    });
+
+
+    /* =========================================================
+       BLOCCO NUMERO OSPITI
+       ========================================================= */
+
+    document.getElementById("ospiti").addEventListener("input", function () {
+
+        if (this.value < 1) {
+            this.value = 1;
+        }
+
+        if (this.value > 5) {
+            this.value = 5;
+        }
+    });
+
+
+    /* =========================================================
+       CONTROLLO DEL FORM
+       ========================================================= */
+
+    document.getElementById("formPrenotazione").addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        let nome = document.getElementById("nome").value.trim();
+        let cognome = document.getElementById("cognome").value.trim();
+        let email = document.getElementById("email").value.trim();
+        let ospiti = document.getElementById("ospiti").value;
+        let checkin = document.getElementById("checkin").value;
+        let checkout = document.getElementById("checkout").value;
+        let camera = document.getElementById("camera").value;
+
+        let messaggio = document.getElementById("messaggio");
+
+
+        /* Controllo date */
+
+        if (!checkin || !checkout) {
+
+            messaggio.innerHTML = "Inserisci entrambe le date.";
+            messaggio.style.color = "red";
+
+            return;
+        }
+
+
+        if (checkout <= checkin) {
+
+            messaggio.innerHTML =
+                "La data di check-out deve essere successiva al check-in.";
+
+            messaggio.style.color = "red";
+
+            return;
+        }
+
+
+        /* Mostro il riepilogo */
+
+        document.getElementById("rNome").innerHTML = nome;
+        document.getElementById("rCognome").innerHTML = cognome;
+        document.getElementById("rEmail").innerHTML = email;
+        document.getElementById("rOspiti").innerHTML = ospiti;
+        document.getElementById("rCheckin").innerHTML = checkin;
+        document.getElementById("rCheckout").innerHTML = checkout;
+        document.getElementById("rCamera").innerHTML = camera;
+
+        document.getElementById("riepilogo").style.display = "block";
+
+
+        /* =====================================================
+           INVIO EMAIL
+           ===================================================== */
+
+        if (!emailConfigurata) {
+
+            messaggio.innerHTML =
+                "Prenotazione registrata. Email non configurata: inserisci Public Key, Service ID e Template ID di EmailJS.";
+
+            messaggio.style.color = "#b05b00";
+
+            return;
+        }
+
+
+        messaggio.innerHTML = "Invio della conferma email...";
+        messaggio.style.color = "#555";
+
+
+        emailjs.sendForm(
+            SERVICE_ID,
+            TEMPLATE_ID,
+            this
+        )
+
+        .then(function() {
+
+            messaggio.innerHTML =
+                "✓ Prenotazione confermata! La email è stata inviata.";
+
+            messaggio.style.color = "green";
+
+        })
+
+        .catch(function(errore) {
+
+            console.log("Errore EmailJS:", errore);
+
+            messaggio.innerHTML =
+                "Prenotazione registrata, ma l'email non è stata inviata. Controlla la configurazione EmailJS.";
+
+            messaggio.style.color = "red";
+
+        });
+
+    });
+
+</script>
+
+
+<script>
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./service-worker.js").catch(function (errore) {
+            console.log("Service worker non disponibile:", errore);
+        });
+    });
+}
+</script>
+</body>
+</html>

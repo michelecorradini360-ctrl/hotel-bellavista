@@ -1,0 +1,9 @@
+{
+  "name": "Hotel Bellavista - Reception",
+  "short_name": "Bellavista",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f3ee",
+  "theme_color": "#8d6748",
+  "description": "Modulo reception per le richieste di prenotazione dell'Hotel Bellavista."
+}
