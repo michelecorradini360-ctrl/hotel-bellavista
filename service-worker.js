@@ -1,23 +1,14 @@
-const CACHE_NAME = "bellavista-reception-v1";
-const FILES_TO_CACHE = ["./", "./index.html", "./manifest.json"];
-
-self.addEventListener("install", function (event) {
-    event.waitUntil(caches.open(CACHE_NAME).then(function (cache) {
-        return cache.addAll(FILES_TO_CACHE);
-    }));
-    self.skipWaiting();
+const CACHE_NAME = "bellavista-gestion-v1";
+const ASSETS = ["./", "./index.html", "./manifest.json"];
+self.addEventListener("install", event => {
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
+  self.skipWaiting();
 });
-self.addEventListener("activate", function (event) {
-    event.waitUntil(caches.keys().then(function (keys) {
-        return Promise.all(keys.map(function (key) {
-            if (key !== CACHE_NAME) return caches.delete(key);
-        }));
-    }));
-    self.clients.claim();
+self.addEventListener("activate", event => {
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.map(key => key !== CACHE_NAME ? caches.delete(key) : Promise.resolve()))));
+  self.clients.claim();
 });
-self.addEventListener("fetch", function (event) {
-    if (event.request.method !== "GET") return;
-    event.respondWith(caches.match(event.request).then(function (cached) {
-        return cached || fetch(event.request);
-    }));
+self.addEventListener("fetch", event => {
+  if (event.request.method !== "GET") return;
+  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request)));
 });
